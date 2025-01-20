@@ -39,9 +39,9 @@ class Configuration
 
     public function setConfig($config = array())
     {
-        $apiKey = isset($config['apiKey']) ? $config['apiKey'] : '';
-        $accessToken = isset($config['accessToken']) ? $config['accessToken'] : '';
-        $server = isset($config['server']) ? $config['server'] : 'invalid-server';
+        $apiKey = $config['apiKey'] ?? '';
+        $accessToken = $config['accessToken'] ?? '';
+        $server = $config['server'] ?? 'invalid-server';
         $host = str_replace('server', $server, $this->getHost());
 
         // Basic Authentication
@@ -72,7 +72,7 @@ class Configuration
 
     public function getApiKey($apiKeyIdentifier)
     {
-        return isset($this->apiKeys[$apiKeyIdentifier]) ? $this->apiKeys[$apiKeyIdentifier] : null;
+        return $this->apiKeys[$apiKeyIdentifier] ?? null;
     }
 
     public function setApiKeyPrefix($apiKeyIdentifier, $prefix)
@@ -83,7 +83,7 @@ class Configuration
 
     public function getApiKeyPrefix($apiKeyIdentifier)
     {
-        return isset($this->apiKeyPrefixes[$apiKeyIdentifier]) ? $this->apiKeyPrefixes[$apiKeyIdentifier] : null;
+        return $this->apiKeyPrefixes[$apiKeyIdentifier] ?? null;
     }
 
     public function setAccessToken($accessToken)
@@ -218,19 +218,14 @@ class Configuration
 
     public function getApiKeyWithPrefix($apiKeyIdentifier)
     {
-        $prefix = $this->getApiKeyPrefix($apiKeyIdentifier);
         $apiKey = $this->getApiKey($apiKeyIdentifier);
 
         if ($apiKey === null) {
             return null;
         }
 
-        if ($prefix === null) {
-            $keyWithPrefix = $apiKey;
-        } else {
-            $keyWithPrefix = $prefix . ' ' . $apiKey;
-        }
+        $prefix = $this->getApiKeyPrefix($apiKeyIdentifier);
 
-        return $keyWithPrefix;
+        return $prefix === null ? $apiKey : $prefix . ' ' . $apiKey;
     }
 }
